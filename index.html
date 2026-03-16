@@ -122,6 +122,20 @@
     </div>
 
     <script src="./lib/matter.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <script>
+      firebase.initializeApp({
+        apiKey: "AIzaSyAc7IVgK--jNO0bn0okjT3103L1XSS6wDY",
+        authDomain: "code-of-life-63590.firebaseapp.com",
+        databaseURL: "https://code-of-life-63590-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "code-of-life-63590",
+        storageBucket: "code-of-life-63590.firebasestorage.app",
+        messagingSenderId: "10934126631",
+        appId: "1:10934126631:web:0a87a932982197c38a2602"
+      });
+      var firebaseDB = firebase.database();
+    </script>
     <script src="./remake.js"></script>
   </body>
 </html>

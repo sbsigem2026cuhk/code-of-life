@@ -11,7 +11,7 @@ const NEXT_BUBBLE_SIZE = 66;
 const NEXT_FRUIT_RATIO = 0.7;
 const PROTRUSION_DANGER = 20;
 const WARNING_DURATION = 10;
-const RANKING_KEY = "suika_planet_rankings";
+
 const MAX_RANKINGS = 10;
 
 const FRUITS = [
@@ -370,60 +370,53 @@ function formatTime(totalSeconds) {
   return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
 }
 
-// --- Ranking (localStorage) ---
+// --- Ranking (Firebase Realtime Database) ---
 
-function loadRankings() {
-  try {
-    const raw = localStorage.getItem(RANKING_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch (e) {
-    return [];
-  }
-}
+const rankingsRef = firebaseDB.ref("rankings");
 
 function saveRanking(won, finalScore, seconds) {
-  const rankings = loadRankings();
-  rankings.push({
+  rankingsRef.push({
     name: playerName,
     won,
     score: finalScore,
     time: seconds,
     date: new Date().toLocaleDateString(),
+    timestamp: Date.now(),
   });
-  rankings.sort((a, b) => {
-    if (a.won !== b.won) return a.won ? -1 : 1;
-    if (a.won && b.won) return a.time - b.time;
-    return b.score - a.score;
-  });
-  if (rankings.length > MAX_RANKINGS) rankings.length = MAX_RANKINGS;
-  try {
-    localStorage.setItem(RANKING_KEY, JSON.stringify(rankings));
-  } catch (e) { /* storage full */ }
 }
 
 function renderRankings() {
-  const rankings = loadRankings();
-  rankingList.innerHTML = "";
+  rankingList.innerHTML = '<div class="rank-empty">Loading...</div>';
+  rankingsRef.orderByChild("timestamp").limitToLast(MAX_RANKINGS).once("value", (snapshot) => {
+    const entries = [];
+    snapshot.forEach((child) => {
+      entries.push(child.val());
+    });
+    entries.sort((a, b) => {
+      if (a.won !== b.won) return a.won ? -1 : 1;
+      if (a.won && b.won) return a.time - b.time;
+      return b.score - a.score;
+    });
 
-  if (rankings.length === 0) {
-    rankingList.innerHTML = '<div class="rank-empty">No records yet. Be the first!</div>';
-    return;
-  }
+    rankingList.innerHTML = "";
+    if (entries.length === 0) {
+      rankingList.innerHTML = '<div class="rank-empty">No records yet. Be the first!</div>';
+      return;
+    }
 
-  rankings.forEach((entry, i) => {
-    const row = document.createElement("div");
-    row.className = "rank-row";
-
-    const result = entry.won ? "WIN" : "LOSE";
-    const name = entry.name || "Anonymous";
-    row.innerHTML =
-      '<span class="rank-pos">#' + (i + 1) + '</span>' +
-      '<span class="rank-name">' + name + '</span>' +
-      '<span class="rank-result">' + result + '</span>' +
-      '<span class="rank-score">' + entry.score + ' pts</span>' +
-      '<span class="rank-time">' + formatTime(entry.time) + '</span>';
-
-    rankingList.appendChild(row);
+    entries.forEach((entry, i) => {
+      const row = document.createElement("div");
+      row.className = "rank-row";
+      const result = entry.won ? "WIN" : "LOSE";
+      const name = entry.name || "Anonymous";
+      row.innerHTML =
+        '<span class="rank-pos">#' + (i + 1) + '</span>' +
+        '<span class="rank-name">' + name + '</span>' +
+        '<span class="rank-result">' + result + '</span>' +
+        '<span class="rank-score">' + entry.score + ' pts</span>' +
+        '<span class="rank-time">' + formatTime(entry.time) + '</span>';
+      rankingList.appendChild(row);
+    });
   });
 }
 
