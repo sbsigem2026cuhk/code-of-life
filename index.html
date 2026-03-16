@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code of Life</title>
+    <link rel="stylesheet" href="./remake.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div id="app-inner">
+
+      <!-- ===== START SCREEN ===== -->
+      <div id="start-overlay" class="active">
+        <div id="start-content">
+          <div id="start-title">Code of Life</div>
+
+          <div id="edu-note">
+            <div id="edu-heading">The Central Dogma of Molecular Biology</div>
+            <p>
+              All life follows a flow of genetic information. It begins with
+              <strong>nucleotides</strong>, the building blocks that form
+              <strong>DNA</strong>. DNA wraps around histones to create
+              <strong>nucleosomes</strong>, which pack into
+              <strong>chromatin</strong> and fold into
+              <strong>chromosomes</strong>. Segments of DNA are transcribed into
+              <strong>mRNA</strong>, which is translated into
+              <strong>proteins</strong>. Proteins organise into
+              <strong>functional cells</strong>, and cells come together to form
+              a complete <strong>organism</strong>.
+            </p>
+            <p>
+              Merge matching molecules to climb the chain of life.
+              Your goal: <strong>create an Organism!</strong>
+            </p>
+          </div>
+
+          <div id="ranking-section">
+            <div id="ranking-heading">Ranking</div>
+            <div id="ranking-list"></div>
+          </div>
+
+          <div id="username-section">
+            <input id="username-input" type="text" placeholder="Enter your name" maxlength="20" autocomplete="off" />
+          </div>
+
+          <button id="start-btn">START</button>
+        </div>
+      </div>
+
+      <!-- ===== HUD ===== -->
+      <div id="score-panel" class="hud">
+        <div class="label">SCORE</div>
+        <div id="score-value">0</div>
+      </div>
+
+      <div id="timer-panel" class="hud">
+        <div class="label">TIME</div>
+        <div id="timer-value">00:00</div>
+      </div>
+
+      <div id="evolution-panel" class="hud">
+        <div id="next-fruit-evolution-wrap">
+          <div id="next-fruit-evolution-label">Next</div>
+          <div id="next-fruit-evolution-bubble">
+            <div id="next-fruit-evolution-img"></div>
+          </div>
+          <div id="next-fruit-evolution-name"></div>
+        </div>
+        <div id="evolution-placeholder"></div>
+      </div>
+
+      <div id="controls-hint" class="hud">A / D: Move pipette | S or Space: Drop</div>
+
+      <div id="logos-corner" class="hud">
+        <img id="logo1" src="./design/logo1.png" alt="Logo 1" />
+        <img id="logo2" src="./design/logo2.png" alt="Logo 2" />
+        <img id="logo3" src="./design/logo3.png" alt="Logo 3" />
+      </div>
+
+      <div id="game-root"></div>
+
+      <div id="pipette-wrapper">
+        <img id="pipette" src="./design/pipette.png" alt="pipette" />
+        <div id="next-fruit-bubble">
+          <div id="next-fruit"></div>
+        </div>
+      </div>
+
+      <!-- ===== WARNING ===== -->
+      <div id="warning-overlay">
+        <div id="warning-content">
+          <div id="warning-title">WARNING</div>
+          <div id="warning-timer">10</div>
+        </div>
+      </div>
+
+      <!-- ===== GAME OVER ===== -->
+      <div id="gameover-overlay">
+        <div id="gameover-content">
+          <div id="gameover-title">GAME OVER</div>
+          <div id="gameover-score-label">Your Score</div>
+          <div id="final-score">0</div>
+          <button class="restart-btn" onclick="location.reload()">RESTART</button>
+        </div>
+      </div>
+
+      <!-- ===== WIN ===== -->
+      <div id="win-overlay">
+        <div id="win-content">
+          <div id="win-title">YOU WIN!</div>
+          <div id="win-subtitle">Organism Created</div>
+          <div id="win-time-label">Time</div>
+          <div id="win-time">00:00</div>
+          <div id="win-score-label">Score</div>
+          <div id="win-score">0</div>
+          <button class="restart-btn" onclick="location.reload()">RESTART</button>
+        </div>
+      </div>
+
+      </div>
+    </div>
+
+    <script src="./lib/matter.min.js"></script>
+    <script src="./remake.js"></script>
+  </body>
+</html>
