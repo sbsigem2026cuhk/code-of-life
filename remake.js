@@ -13,6 +13,7 @@ const PROTRUSION_DANGER = 20;
 const WARNING_DURATION = 10;
 
 const MAX_RANKINGS = 10;
+const rankingsRef = firebaseDB.ref("rankings");
 
 const FRUITS = [
   { name: "Nucleotide",      visRadius: 28,  drawRadius: 42,  texture: "./design/nucleotide.png",           color: "#ff8f8f" },
@@ -371,8 +372,6 @@ function formatTime(totalSeconds) {
 }
 
 // --- Ranking (Firebase Realtime Database) ---
-
-const rankingsRef = firebaseDB.ref("rankings");
 
 function saveRanking(won, finalScore, seconds) {
   rankingsRef.push({
