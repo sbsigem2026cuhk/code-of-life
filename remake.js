@@ -386,7 +386,7 @@ function saveRanking(won, finalScore, seconds) {
 
 function renderRankings() {
   rankingList.innerHTML = '<div class="rank-empty">Loading...</div>';
-  rankingsRef.orderByChild("timestamp").limitToLast(MAX_RANKINGS).once("value", (snapshot) => {
+  rankingsRef.orderByChild("timestamp").once("value", (snapshot) => {
     const entries = [];
     snapshot.forEach((child) => {
       entries.push(child.val());
