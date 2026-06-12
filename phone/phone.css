@@ -37,53 +37,6 @@ html, body {
   -webkit-user-select: none;
 }
 
-/* ===== Rotate to portrait hint ===== */
-
-#rotate-hint {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  background: #1a1235;
-  text-align: center;
-  padding: 24px;
-}
-
-#rotate-icon {
-  font-size: 64px;
-  color: #ffe066;
-  animation: spin-hint 2s ease-in-out infinite;
-}
-
-@keyframes spin-hint {
-  0%, 100% { transform: rotate(90deg); }
-  50%      { transform: rotate(0deg); }
-}
-
-#rotate-hint p {
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  opacity: 0.9;
-  max-width: 260px;
-  line-height: 1.5;
-}
-
-@media (orientation: landscape) {
-  #rotate-hint {
-    display: flex;
-  }
-
-  #app {
-    visibility: hidden;
-    pointer-events: none;
-  }
-}
-
 #app {
   position: fixed;
   inset: 0;
