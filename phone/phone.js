@@ -15,8 +15,8 @@ const NEXT_FRUIT_RATIO = 0.7;
 const PROTRUSION_DANGER = Math.round(20 * S);
 const WARNING_DURATION = 10;
 const PIPETTE_ORBIT = PLANET_RADIUS + Math.round(65 * S);
-const PIPETTE_OFFSET_X = Math.round(28 * S);
-const PIPETTE_OFFSET_Y = Math.round(45 * S);
+const PIPETTE_PIVOT_X = Math.round(35 * (80 / 120));
+const PIPETTE_PIVOT_Y = Math.round(45 * (80 / 120));
 const DISH_BOTTOM = CENTER.y + PLANET_RADIUS + RING_THICKNESS;
 
 const MAX_RANKINGS = 10;
@@ -118,6 +118,14 @@ function layoutPhoneUI() {
   document.documentElement.style.setProperty(
     "--controls-top",
     `${DISH_BOTTOM + 16}px`,
+  );
+  document.documentElement.style.setProperty(
+    "--pipette-pivot-x",
+    `${PIPETTE_PIVOT_X}px`,
+  );
+  document.documentElement.style.setProperty(
+    "--pipette-pivot-y",
+    `${PIPETTE_PIVOT_Y}px`,
   );
 }
 
@@ -563,8 +571,8 @@ function updatePipetteUI() {
   const py = CENTER.y + Math.sin(angle) * PIPETTE_ORBIT;
   const rotationDeg = (angle + Math.PI / 2) * (180 / Math.PI);
 
-  pipetteWrapper.style.left = `${px - PIPETTE_OFFSET_X}px`;
-  pipetteWrapper.style.top = `${py - PIPETTE_OFFSET_Y}px`;
+  pipetteWrapper.style.left = `${px - PIPETTE_PIVOT_X}px`;
+  pipetteWrapper.style.top = `${py - PIPETTE_PIVOT_Y}px`;
   pipetteWrapper.style.transform = `rotate(${rotationDeg}deg)`;
 }
 
