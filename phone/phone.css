@@ -4,18 +4,20 @@
 }
 
 .version-link {
-  position: fixed;
-  top: calc(10px + env(safe-area-inset-top, 0px));
-  right: calc(10px + env(safe-area-inset-right, 0px));
-  z-index: 400;
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 35;
   padding: 6px 12px;
   border-radius: 10px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: #ffffff;
   text-decoration: none;
   background: rgba(18, 22, 42, 0.55);
   border: 1px solid rgba(255, 255, 255, 0.28);
+  white-space: nowrap;
 }
 
 .version-link:hover {
@@ -28,6 +30,7 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
+  height: 100dvh;
   overflow: hidden;
   touch-action: none;
   font-family: Arial, sans-serif;
@@ -40,6 +43,8 @@ html, body {
 #app {
   position: fixed;
   inset: 0;
+  width: 100%;
+  height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,12 +53,19 @@ html, body {
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
-#app-inner {
+#app-scale {
   position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+#app-inner {
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 390px;
   height: 844px;
-  flex-shrink: 0;
-  transform-origin: center center;
+  transform-origin: top left;
 }
 
 #game-root {
@@ -386,7 +398,7 @@ html, body {
   position: absolute;
   left: 12px;
   right: 12px;
-  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: center;

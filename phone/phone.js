@@ -610,14 +610,29 @@ function updateScore(nextScore) {
   scoreValue.textContent = String(score);
 }
 
+function getAvailableSize() {
+  const app = document.getElementById("app");
+  if (app) {
+    return { w: app.clientWidth, h: app.clientHeight };
+  }
+  const vv = window.visualViewport;
+  return {
+    w: vv ? vv.width : window.innerWidth,
+    h: vv ? vv.height : window.innerHeight,
+  };
+}
+
 function fitGameToViewport() {
+  const wrap = document.getElementById("app-scale");
   const inner = document.getElementById("app-inner");
-  if (!inner) return;
-  const scale = Math.min(
-    window.innerWidth / WIDTH,
-    window.innerHeight / HEIGHT
-  );
-  inner.style.transform = "scale(" + scale + ")";
+  if (!wrap || !inner) return;
+
+  const { w: availW, h: availH } = getAvailableSize();
+  const scale = Math.min(availW / WIDTH, availH / HEIGHT);
+
+  wrap.style.width = `${WIDTH * scale}px`;
+  wrap.style.height = `${HEIGHT * scale}px`;
+  inner.style.transform = `scale(${scale})`;
 }
 
 fitGameToViewport();
@@ -625,6 +640,9 @@ window.addEventListener("resize", fitGameToViewport);
 window.addEventListener("orientationchange", () => {
   setTimeout(fitGameToViewport, 100);
 });
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", fitGameToViewport);
+}
 
 document.addEventListener("gesturestart", (e) => e.preventDefault());
 document.addEventListener("gesturechange", (e) => e.preventDefault());

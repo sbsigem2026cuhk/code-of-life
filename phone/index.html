@@ -11,10 +11,11 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#1a1235" />
     <title>Code of Life — Phone</title>
-    <link rel="stylesheet" href="./phone.css?v=2" />
+    <link rel="stylesheet" href="./phone.css?v=3" />
   </head>
   <body>
     <div id="app">
+      <div id="app-scale">
       <div id="app-inner">
 
       <!-- ===== START SCREEN ===== -->
@@ -115,10 +116,10 @@
         </div>
       </div>
 
+      <a class="version-link" href="../">← Change version</a>
+      </div>
       </div>
     </div>
-
-    <a class="version-link" href="../">← Change version</a>
 
     <script src="../lib/matter.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -135,6 +136,6 @@
       });
       var firebaseDB = firebase.database();
     </script>
-    <script src="./phone.js?v=2"></script>
+    <script src="./phone.js?v=3"></script>
   </body>
 </html>
