@@ -37,7 +37,7 @@ html, body {
   -webkit-user-select: none;
 }
 
-/* ===== Rotate to landscape hint ===== */
+/* ===== Rotate to portrait hint ===== */
 
 #rotate-hint {
   position: fixed;
@@ -60,8 +60,8 @@ html, body {
 }
 
 @keyframes spin-hint {
-  0%, 100% { transform: rotate(0deg); }
-  50%      { transform: rotate(90deg); }
+  0%, 100% { transform: rotate(90deg); }
+  50%      { transform: rotate(0deg); }
 }
 
 #rotate-hint p {
@@ -73,7 +73,7 @@ html, body {
   line-height: 1.5;
 }
 
-@media (orientation: portrait) {
+@media (orientation: landscape) {
   #rotate-hint {
     display: flex;
   }
@@ -91,14 +91,14 @@ html, body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 30%, #d4c8ff 0%, #bba9f0 45%, #9f8be0 100%);
+  background: radial-gradient(circle at 50% 28%, #d4c8ff 0%, #bba9f0 45%, #9f8be0 100%);
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 #app-inner {
   position: relative;
-  width: 844px;
-  height: 390px;
+  width: 390px;
+  height: 844px;
   flex-shrink: 0;
   transform-origin: center center;
 }
@@ -116,7 +116,7 @@ html, body {
   z-index: 300;
   background: rgba(20, 14, 46, 0.94);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   opacity: 0;
   pointer-events: none;
@@ -131,28 +131,13 @@ html, body {
 }
 
 #start-content {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  text-align: left;
-  width: 100%;
-  max-width: 800px;
-  padding: 16px 24px;
-}
-
-#start-left {
-  flex: 1;
-  min-width: 0;
   text-align: center;
-}
-
-#start-right {
-  flex: 0 0 280px;
-  min-width: 0;
+  width: 100%;
+  padding: 32px 20px 40px;
 }
 
 #start-title {
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 900;
   letter-spacing: 3px;
   color: #ffe066;
@@ -168,18 +153,18 @@ html, body {
 }
 
 #edu-note {
-  margin-top: 14px;
-  padding: 12px 14px;
+  margin-top: 20px;
+  padding: 16px 18px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.18);
   text-align: left;
   line-height: 1.5;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 #edu-heading {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.5px;
   margin-bottom: 6px;
@@ -195,7 +180,7 @@ html, body {
 }
 
 #ranking-section {
-  margin-top: 0;
+  margin-top: 18px;
 }
 
 #ranking-heading {
@@ -211,8 +196,8 @@ html, body {
 #ranking-list {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  max-height: 160px;
+  gap: 4px;
+  max-height: 140px;
   overflow-y: auto;
 }
 
@@ -266,7 +251,7 @@ html, body {
 }
 
 #username-section {
-  margin-top: 12px;
+  margin-top: 18px;
 }
 
 #username-input {
@@ -292,9 +277,9 @@ html, body {
 }
 
 #start-btn {
-  margin-top: 12px;
-  padding: 12px 48px;
-  font-size: 18px;
+  margin-top: 18px;
+  padding: 14px 56px;
+  font-size: 20px;
   font-weight: 800;
   letter-spacing: 3px;
   color: #1a1230;
@@ -311,30 +296,27 @@ html, body {
   transition: opacity 0.3s ease;
 }
 
-#score-panel {
+#hud-top {
   position: absolute;
-  top: 14px;
-  left: 14px;
-  width: 110px;
-  padding: 8px 10px;
-  border-radius: 12px;
-  background: rgba(18, 22, 42, 0.5);
-  backdrop-filter: blur(2px);
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
   z-index: 20;
+  pointer-events: none;
 }
 
+#score-panel,
 #timer-panel {
-  position: absolute;
-  top: 82px;
-  left: 14px;
-  width: 110px;
+  flex: 0 0 auto;
+  min-width: 88px;
   padding: 8px 10px;
   border-radius: 12px;
   background: rgba(18, 22, 42, 0.5);
   backdrop-filter: blur(2px);
   border: 1px solid rgba(255, 255, 255, 0.28);
-  z-index: 20;
 }
 
 .label {
@@ -358,11 +340,9 @@ html, body {
 }
 
 #evolution-panel {
-  position: absolute;
-  right: 14px;
-  bottom: 14px;
+  margin-left: auto;
   text-align: center;
-  z-index: 20;
+  flex: 0 0 auto;
 }
 
 #next-fruit-evolution-label {
@@ -375,8 +355,8 @@ html, body {
 }
 
 #next-fruit-evolution-bubble {
-  width: 72px;
-  height: 72px;
+  width: 64px;
+  height: 64px;
   margin: 0 auto;
   border-radius: 50%;
   background: rgba(180, 160, 220, 0.45);
@@ -409,9 +389,9 @@ html, body {
 
 #pipette-wrapper {
   position: absolute;
-  width: 130px;
-  height: 65px;
-  transform-origin: 26px 32px;
+  width: 120px;
+  height: 60px;
+  transform-origin: 24px 30px;
   z-index: 25;
   pointer-events: none;
 }
@@ -420,17 +400,17 @@ html, body {
   position: absolute;
   left: 0;
   top: 0;
-  width: 88px;
+  width: 80px;
   height: auto;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
 }
 
 #next-fruit-bubble {
   position: absolute;
-  left: 66px;
+  left: 60px;
   top: 6px;
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.23);
   border: 1px solid rgba(255, 255, 255, 0.48);
@@ -451,13 +431,13 @@ html, body {
 
 #touch-controls {
   position: absolute;
-  left: 50%;
-  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  transform: translateX(-50%);
+  left: 12px;
+  right: 12px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: 12px;
   z-index: 30;
   opacity: 1;
   transition: opacity 0.3s ease;
@@ -470,8 +450,8 @@ html, body {
 
 .touch-btn {
   flex: 0 0 auto;
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.35);
   background: rgba(18, 22, 42, 0.65);
@@ -495,10 +475,10 @@ html, body {
 }
 
 .touch-btn-drop {
-  width: 96px;
-  height: 64px;
-  border-radius: 32px;
-  font-size: 17px;
+  width: 100px;
+  height: 72px;
+  border-radius: 36px;
+  font-size: 18px;
   font-weight: 800;
   letter-spacing: 2px;
   background: linear-gradient(135deg, rgba(255, 224, 102, 0.85), rgba(255, 179, 71, 0.85));
@@ -536,14 +516,14 @@ html, body {
 
 #warning-content {
   position: absolute;
-  top: 50%;
+  top: 42%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
 }
 
 #warning-title {
-  font-size: 36px;
+  font-size: 40px;
   font-weight: 900;
   color: #ff2828;
   letter-spacing: 4px;

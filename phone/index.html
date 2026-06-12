@@ -16,7 +16,7 @@
   <body>
     <div id="rotate-hint">
       <div id="rotate-icon">↻</div>
-      <p>Rotate your phone to landscape to play</p>
+      <p>Rotate your phone upright to play</p>
     </div>
 
     <div id="app">
@@ -25,54 +25,52 @@
       <!-- ===== START SCREEN ===== -->
       <div id="start-overlay" class="active">
         <div id="start-content">
-          <div id="start-left">
-            <div id="start-title">Code of Life</div>
-            <div id="start-subtitle">Phone Edition · Landscape</div>
+          <div id="start-title">Code of Life</div>
+          <div id="start-subtitle">Phone Edition</div>
 
-            <div id="edu-note">
-              <div id="edu-heading">The Central Dogma of Molecular Biology</div>
-              <p>
-                Merge matching molecules to climb the chain of life — from
-                <strong>nucleotides</strong> to a complete <strong>organism</strong>.
-              </p>
-              <p>
-                Your goal: <strong>create an Organism!</strong>
-              </p>
-            </div>
-
-            <div id="username-section">
-              <input id="username-input" type="text" placeholder="Enter your name" maxlength="20" autocomplete="off" />
-            </div>
-
-            <button id="start-btn">START</button>
+          <div id="edu-note">
+            <div id="edu-heading">The Central Dogma of Molecular Biology</div>
+            <p>
+              Merge matching molecules to climb the chain of life — from
+              <strong>nucleotides</strong> to a complete <strong>organism</strong>.
+            </p>
+            <p>
+              Your goal: <strong>create an Organism!</strong>
+            </p>
           </div>
 
-          <div id="start-right">
-            <div id="ranking-section">
-              <div id="ranking-heading">Ranking</div>
-              <div id="ranking-list"></div>
-            </div>
+          <div id="ranking-section">
+            <div id="ranking-heading">Ranking</div>
+            <div id="ranking-list"></div>
           </div>
+
+          <div id="username-section">
+            <input id="username-input" type="text" placeholder="Enter your name" maxlength="20" autocomplete="off" />
+          </div>
+
+          <button id="start-btn" type="button">START</button>
         </div>
       </div>
 
       <!-- ===== HUD ===== -->
-      <div id="score-panel" class="hud">
-        <div class="label">SCORE</div>
-        <div id="score-value">0</div>
-      </div>
-
-      <div id="timer-panel" class="hud">
-        <div class="label">TIME</div>
-        <div id="timer-value">00:00</div>
-      </div>
-
-      <div id="evolution-panel" class="hud">
-        <div id="next-fruit-evolution-label">Next</div>
-        <div id="next-fruit-evolution-bubble">
-          <div id="next-fruit-evolution-img"></div>
+      <div id="hud-top">
+        <div id="score-panel" class="hud">
+          <div class="label">SCORE</div>
+          <div id="score-value">0</div>
         </div>
-        <div id="next-fruit-evolution-name"></div>
+
+        <div id="timer-panel" class="hud">
+          <div class="label">TIME</div>
+          <div id="timer-value">00:00</div>
+        </div>
+
+        <div id="evolution-panel" class="hud">
+          <div id="next-fruit-evolution-label">Next</div>
+          <div id="next-fruit-evolution-bubble">
+            <div id="next-fruit-evolution-img"></div>
+          </div>
+          <div id="next-fruit-evolution-name"></div>
+        </div>
       </div>
 
       <div id="game-root"></div>
@@ -142,6 +140,6 @@
       });
       var firebaseDB = firebase.database();
     </script>
-    <script src="./phone.js"></script>
+    <script src="./phone.js?v=2"></script>
   </body>
 </html>

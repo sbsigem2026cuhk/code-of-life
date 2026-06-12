@@ -1,12 +1,12 @@
 const { Bodies, Body, Composite, Engine, Events, Render, Runner, World } = Matter;
 
 const ASSET_BASE = "../design/";
-const S = 390 / 820;
+const S = 130 / 270;
 
-const WIDTH = 844;
-const HEIGHT = 390;
-const CENTER = { x: Math.round(430 * WIDTH / 1200), y: Math.round(410 * HEIGHT / 820) };
-const PLANET_RADIUS = Math.round(270 * S);
+const WIDTH = 390;
+const HEIGHT = 844;
+const CENTER = { x: WIDTH / 2, y: 310 };
+const PLANET_RADIUS = 130;
 const RING_THICKNESS = Math.round(26 * S);
 const RADIAL_GRAVITY = 0.00016;
 const ANGULAR_SPEED = 0.032;
