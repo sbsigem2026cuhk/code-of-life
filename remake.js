@@ -51,6 +51,7 @@ Render.run(render);
 
 const runner = Runner.create();
 let gameStarted = false;
+let runnerStarted = false;
 
 // --- DOM refs ---
 
@@ -78,6 +79,7 @@ let playerName = "";
 let score = 0;
 let angle = -Math.PI / 2;
 let rotateDir = 0;
+const keysHeld = new Set();
 let canDrop = true;
 let currentFruitIndex = randomStartFruitIndex();
 let nextFruitIndex = randomStartFruitIndex();
@@ -90,6 +92,8 @@ let warningCountdown = 0;
 let warningIntervalId = null;
 let elapsedSeconds = 0;
 let timerIntervalId = null;
+let lastPipetteTime = 0;
+const FRAME_MS = 1000 / 60;
 
 // --- Planet visual (transparent; custom draw) ---
 
@@ -115,35 +119,95 @@ renderRankings();
 
 // --- Start button ---
 
-startBtn.addEventListener("click", () => {
+function startPhysicsOnce() {
+  if (runnerStarted) return;
+  runnerStarted = true;
+  Runner.run(runner, engine);
+}
+
+function beginGame() {
+  if (gameStarted) return;
   playerName = usernameInput.value.trim() || "Anonymous";
   startOverlay.classList.remove("active");
   gameStarted = true;
-  Runner.run(runner, engine);
+  startBtn.disabled = true;
+  startBtn.tabIndex = -1;
+  usernameInput.tabIndex = -1;
+  startBtn.blur();
+  if (document.activeElement && document.activeElement !== document.body) {
+    document.activeElement.blur();
+  }
+  startPhysicsOnce();
   startTimer();
-});
+}
+
+startBtn.addEventListener("click", beginGame);
 
 // --- Input ---
 
+function updateRotateDir() {
+  if (keysHeld.has("KeyA") && keysHeld.has("KeyD")) {
+    rotateDir = 0;
+  } else if (keysHeld.has("KeyA")) {
+    rotateDir = -1;
+  } else if (keysHeld.has("KeyD")) {
+    rotateDir = 1;
+  } else {
+    rotateDir = 0;
+  }
+}
+
+function clearHeldKeys() {
+  keysHeld.clear();
+  rotateDir = 0;
+}
+
 window.addEventListener("keydown", (event) => {
   if (!gameStarted || gameEnded) return;
-  if (event.code === "KeyA") {
-    rotateDir = -1;
-  } else if (event.code === "KeyD") {
-    rotateDir = 1;
+
+  if (event.code === "KeyA" || event.code === "KeyD") {
+    event.preventDefault();
+    keysHeld.add(event.code);
+    updateRotateDir();
   } else if (event.code === "KeyS" || event.code === "Space") {
+    event.preventDefault();
+    if (event.repeat) return;
     if (canDrop) {
       dropFruit();
     }
   }
 });
 
-window.addEventListener("keyup", (event) => {
-  if (event.code === "KeyA" && rotateDir === -1) {
-    rotateDir = 0;
-  } else if (event.code === "KeyD" && rotateDir === 1) {
-    rotateDir = 0;
+window.addEventListener(
+  "keyup",
+  (event) => {
+    if (event.code === "KeyS" || event.code === "Space") {
+      event.preventDefault();
+    }
+    if (event.code === "KeyA" || event.code === "KeyD") {
+      keysHeld.delete(event.code);
+      updateRotateDir();
+    }
+  },
+  true,
+);
+
+window.addEventListener("blur", clearHeldKeys);
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) clearHeldKeys();
+});
+
+requestAnimationFrame(function pipetteLoop(timestamp) {
+  if (gameStarted && !gameEnded && rotateDir !== 0) {
+    if (!lastPipetteTime) lastPipetteTime = timestamp;
+    const dt = Math.min(timestamp - lastPipetteTime, 50);
+    lastPipetteTime = timestamp;
+    angle += rotateDir * ANGULAR_SPEED * (dt / FRAME_MS);
+    updatePipetteUI();
+  } else {
+    lastPipetteTime = 0;
   }
+  requestAnimationFrame(pipetteLoop);
 });
 
 // --- Physics loop ---
@@ -151,7 +215,6 @@ window.addEventListener("keyup", (event) => {
 Events.on(engine, "beforeUpdate", () => {
   if (gameEnded) return;
   applyPlanetGravity();
-  stepPipette();
   checkProtrusion();
 });
 
@@ -505,12 +568,6 @@ function applyPlanetGravity() {
       y: uy * forceMagnitude,
     });
   });
-}
-
-function stepPipette() {
-  if (rotateDir === 0) return;
-  angle += rotateDir * ANGULAR_SPEED;
-  updatePipetteUI();
 }
 
 function updatePipetteUI() {
