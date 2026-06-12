@@ -5,13 +5,13 @@
 
 .version-link {
   position: absolute;
-  bottom: 100px;
+  bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 35;
-  padding: 6px 12px;
+  padding: 5px 10px;
   border-radius: 10px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   color: #ffffff;
   text-decoration: none;
@@ -263,12 +263,11 @@ html, body {
 
 #hud-top {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  right: 12px;
+  top: 8px;
+  left: 8px;
   display: flex;
   align-items: flex-start;
-  gap: 8px;
+  gap: 6px;
   z-index: 20;
   pointer-events: none;
 }
@@ -276,52 +275,57 @@ html, body {
 #score-panel,
 #timer-panel {
   flex: 0 0 auto;
-  min-width: 88px;
-  padding: 8px 10px;
-  border-radius: 12px;
+  min-width: 62px;
+  padding: 5px 8px;
+  border-radius: 10px;
   background: rgba(18, 22, 42, 0.5);
   backdrop-filter: blur(2px);
   border: 1px solid rgba(255, 255, 255, 0.28);
 }
 
 .label {
-  font-size: 10px;
-  letter-spacing: 1px;
+  font-size: 8px;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
   opacity: 0.9;
 }
 
 #score-value {
-  margin-top: 4px;
-  font-size: 22px;
+  margin-top: 2px;
+  font-size: 16px;
   font-weight: 700;
+  line-height: 1;
 }
 
 #timer-value {
-  margin-top: 4px;
-  font-size: 20px;
+  margin-top: 2px;
+  font-size: 15px;
   font-weight: 700;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
 #evolution-panel {
-  margin-left: auto;
+  position: absolute;
+  top: 78px;
+  right: 52px;
   text-align: center;
-  flex: 0 0 auto;
+  z-index: 20;
+  pointer-events: none;
 }
 
 #next-fruit-evolution-label {
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
   opacity: 0.9;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 #next-fruit-evolution-bubble {
-  width: 64px;
-  height: 64px;
+  width: 52px;
+  height: 52px;
   margin: 0 auto;
   border-radius: 50%;
   background: rgba(180, 160, 220, 0.45);
@@ -329,7 +333,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.12);
 }
 
 #next-fruit-evolution-img {
@@ -342,11 +346,11 @@ html, body {
 }
 
 #next-fruit-evolution-name {
-  margin-top: 4px;
-  font-size: 11px;
+  margin-top: 3px;
+  font-size: 9px;
   font-weight: 600;
   opacity: 0.95;
-  max-width: 90px;
+  max-width: 72px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -398,11 +402,12 @@ html, body {
   position: absolute;
   left: 12px;
   right: 12px;
-  bottom: 20px;
+  top: var(--controls-top, 458px);
+  bottom: auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   z-index: 30;
   opacity: 1;
   transition: opacity 0.3s ease;
@@ -415,13 +420,13 @@ html, body {
 
 .touch-btn {
   flex: 0 0 auto;
-  width: 72px;
-  height: 72px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.35);
   background: rgba(18, 22, 42, 0.65);
   color: #ffffff;
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -440,10 +445,10 @@ html, body {
 }
 
 .touch-btn-drop {
-  width: 100px;
-  height: 72px;
-  border-radius: 36px;
-  font-size: 18px;
+  width: 92px;
+  height: 64px;
+  border-radius: 32px;
+  font-size: 16px;
   font-weight: 800;
   letter-spacing: 2px;
   background: linear-gradient(135deg, rgba(255, 224, 102, 0.85), rgba(255, 179, 71, 0.85));

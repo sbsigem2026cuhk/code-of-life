@@ -17,6 +17,7 @@ const WARNING_DURATION = 10;
 const PIPETTE_ORBIT = PLANET_RADIUS + Math.round(65 * S);
 const PIPETTE_OFFSET_X = Math.round(28 * S);
 const PIPETTE_OFFSET_Y = Math.round(45 * S);
+const DISH_BOTTOM = CENTER.y + PLANET_RADIUS + RING_THICKNESS;
 
 const MAX_RANKINGS = 10;
 const rankingsRef = firebaseDB.ref("rankings");
@@ -110,7 +111,15 @@ Events.on(render, "afterRender", () => {
 
 updatePipetteUI();
 updateNextFruitUI();
+layoutPhoneUI();
 renderRankings();
+
+function layoutPhoneUI() {
+  document.documentElement.style.setProperty(
+    "--controls-top",
+    `${DISH_BOTTOM + 16}px`,
+  );
+}
 
 startBtn.addEventListener("click", () => {
   if (gameStarted) return;
@@ -633,6 +642,7 @@ function fitGameToViewport() {
   wrap.style.width = `${WIDTH * scale}px`;
   wrap.style.height = `${HEIGHT * scale}px`;
   inner.style.transform = `scale(${scale})`;
+  layoutPhoneUI();
 }
 
 fitGameToViewport();
