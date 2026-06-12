@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Code of Life" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#1a1235" />
+    <title>Code of Life — Phone</title>
+    <link rel="stylesheet" href="./phone.css" />
+  </head>
+  <body>
+    <div id="rotate-hint">
+      <div id="rotate-icon">↻</div>
+      <p>Rotate your phone to landscape to play</p>
+    </div>
+
+    <div id="app">
+      <div id="app-inner">
+
+      <!-- ===== START SCREEN ===== -->
+      <div id="start-overlay" class="active">
+        <div id="start-content">
+          <div id="start-left">
+            <div id="start-title">Code of Life</div>
+            <div id="start-subtitle">Phone Edition · Landscape</div>
+
+            <div id="edu-note">
+              <div id="edu-heading">The Central Dogma of Molecular Biology</div>
+              <p>
+                Merge matching molecules to climb the chain of life — from
+                <strong>nucleotides</strong> to a complete <strong>organism</strong>.
+              </p>
+              <p>
+                Your goal: <strong>create an Organism!</strong>
+              </p>
+            </div>
+
+            <div id="username-section">
+              <input id="username-input" type="text" placeholder="Enter your name" maxlength="20" autocomplete="off" />
+            </div>
+
+            <button id="start-btn">START</button>
+          </div>
+
+          <div id="start-right">
+            <div id="ranking-section">
+              <div id="ranking-heading">Ranking</div>
+              <div id="ranking-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== HUD ===== -->
+      <div id="score-panel" class="hud">
+        <div class="label">SCORE</div>
+        <div id="score-value">0</div>
+      </div>
+
+      <div id="timer-panel" class="hud">
+        <div class="label">TIME</div>
+        <div id="timer-value">00:00</div>
+      </div>
+
+      <div id="evolution-panel" class="hud">
+        <div id="next-fruit-evolution-label">Next</div>
+        <div id="next-fruit-evolution-bubble">
+          <div id="next-fruit-evolution-img"></div>
+        </div>
+        <div id="next-fruit-evolution-name"></div>
+      </div>
+
+      <div id="game-root"></div>
+
+      <div id="pipette-wrapper">
+        <img id="pipette" src="../design/pipette.png" alt="pipette" />
+        <div id="next-fruit-bubble">
+          <div id="next-fruit"></div>
+        </div>
+      </div>
+
+      <!-- ===== TOUCH CONTROLS ===== -->
+      <div id="touch-controls">
+        <button id="btn-left" class="touch-btn" aria-label="Rotate left">◀</button>
+        <button id="btn-drop" class="touch-btn touch-btn-drop" aria-label="Drop">DROP</button>
+        <button id="btn-right" class="touch-btn" aria-label="Rotate right">▶</button>
+      </div>
+
+      <!-- ===== WARNING ===== -->
+      <div id="warning-overlay">
+        <div id="warning-content">
+          <div id="warning-title">WARNING</div>
+          <div id="warning-timer">10</div>
+        </div>
+      </div>
+
+      <!-- ===== GAME OVER ===== -->
+      <div id="gameover-overlay">
+        <div id="gameover-content">
+          <div id="gameover-title">GAME OVER</div>
+          <div id="gameover-score-label">Your Score</div>
+          <div id="final-score">0</div>
+          <button class="restart-btn" onclick="location.reload()">RESTART</button>
+        </div>
+      </div>
+
+      <!-- ===== WIN ===== -->
+      <div id="win-overlay">
+        <div id="win-content">
+          <div id="win-title">YOU WIN!</div>
+          <div id="win-subtitle">Organism Created</div>
+          <div id="win-time-label">Time</div>
+          <div id="win-time">00:00</div>
+          <div id="win-score-label">Score</div>
+          <div id="win-score">0</div>
+          <button class="restart-btn" onclick="location.reload()">RESTART</button>
+        </div>
+      </div>
+
+      </div>
+    </div>
+
+    <a class="version-link" href="../">← Change version</a>
+
+    <script src="../lib/matter.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <script>
+      firebase.initializeApp({
+        apiKey: "AIzaSyAc7IVgK--jNO0bn0okjT3103L1XSS6wDY",
+        authDomain: "code-of-life-63590.firebaseapp.com",
+        databaseURL: "https://code-of-life-63590-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "code-of-life-63590",
+        storageBucket: "code-of-life-63590.firebasestorage.app",
+        messagingSenderId: "10934126631",
+        appId: "1:10934126631:web:0a87a932982197c38a2602"
+      });
+      var firebaseDB = firebase.database();
+    </script>
+    <script src="./phone.js"></script>
+  </body>
+</html>

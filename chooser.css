@@ -1,0 +1,118 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+  background: #1a1235;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: radial-gradient(circle at 50% 20%, #d4c8ff 0%, #bba9f0 42%, #9f8be0 72%, #1a1235 100%);
+}
+
+#chooser {
+  width: 100%;
+  max-width: 720px;
+  text-align: center;
+}
+
+#chooser-title {
+  margin: 0;
+  font-size: clamp(36px, 8vw, 52px);
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #ffe066;
+  text-shadow: 0 0 30px rgba(255, 224, 102, 0.35);
+}
+
+#chooser-subtitle {
+  margin: 10px 0 0;
+  font-size: 16px;
+  opacity: 0.8;
+  letter-spacing: 1px;
+}
+
+#chooser-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 36px;
+}
+
+.chooser-card {
+  position: relative;
+  display: block;
+  padding: 28px 22px 24px;
+  border-radius: 18px;
+  text-decoration: none;
+  color: inherit;
+  background: rgba(18, 22, 42, 0.55);
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(4px);
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.chooser-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 224, 102, 0.55);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.25);
+}
+
+.chooser-card.recommended::after {
+  content: "Recommended";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #1a1230;
+  background: #ffe066;
+}
+
+.card-icon {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.card-title {
+  margin-top: 14px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.card-desc {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+.card-controls {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffe066;
+  letter-spacing: 0.5px;
+}
+
+#chooser-hint {
+  margin: 28px 0 0;
+  font-size: 13px;
+  opacity: 0.65;
+  line-height: 1.5;
+}
