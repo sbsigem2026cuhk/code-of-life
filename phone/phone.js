@@ -1,10 +1,8 @@
 const { Bodies, Body, Composite, Engine, Events, Render, Runner, World } = Matter;
 
 const ASSET_BASE = "../design/";
-const DESIGN_VERSION = "20260612";
-
 function designUrl(file) {
-  return `${ASSET_BASE}${file}?v=${DESIGN_VERSION}`;
+  return `${ASSET_BASE}${file}`;
 }
 
 const S = 130 / 270;
@@ -41,7 +39,7 @@ const FRUITS = [
 ];
 
 const SCORE_PER_MERGE_LEVEL = [0, 2, 4, 8, 14, 24, 40, 65, 100];
-const COLLISION_RATIO = 0.65;
+const COLLISION_RATIO = 0.94;
 const imageMetaCache = {};
 
 function measureImageContent(img) {
@@ -173,9 +171,17 @@ layoutPhoneUI();
 renderRankings();
 
 function layoutPhoneUI() {
+  const controlsTop = DISH_BOTTOM + 16;
+  const controlsHeight = 64;
+  const footerTop = controlsTop + controlsHeight + 8;
+  const footerBottomReserved = 44;
+  const footerHeight = Math.max(150, HEIGHT - footerTop - footerBottomReserved);
+
+  document.documentElement.style.setProperty("--footer-top", `${footerTop}px`);
+  document.documentElement.style.setProperty("--footer-height", `${footerHeight}px`);
   document.documentElement.style.setProperty(
     "--controls-top",
-    `${DISH_BOTTOM + 16}px`,
+    `${controlsTop}px`,
   );
   document.documentElement.style.setProperty(
     "--pipette-pivot-x",

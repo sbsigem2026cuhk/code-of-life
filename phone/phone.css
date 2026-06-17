@@ -71,6 +71,7 @@ html, body {
 #game-root {
   position: absolute;
   inset: 0;
+  z-index: 1;
 }
 
 /* ===== Start screen ===== */
@@ -354,6 +355,62 @@ html, body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+#phone-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--footer-top, 548px);
+  height: var(--footer-height, 250px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 6px 6px;
+  z-index: 22;
+  pointer-events: none;
+  overflow: visible;
+}
+
+#evolution-placeholder {
+  flex: 0 0 auto;
+  width: min(188px, var(--footer-height, 188px));
+  height: min(188px, var(--footer-height, 188px));
+  background-color: transparent;
+  background-image: url("../design/circle.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+#logos-corner {
+  flex: 0 1 auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  min-width: 0;
+}
+
+#logos-corner img {
+  max-height: min(58px, calc(var(--footer-height, 188px) * 0.32));
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+#logos-corner #logo1 {
+  max-height: min(68px, calc(var(--footer-height, 188px) * 0.38));
+  margin-left: -8px;
+}
+
+#logos-corner #logo2 {
+  max-height: min(40px, calc(var(--footer-height, 188px) * 0.22));
+  margin-left: -8px;
+}
+
+#logos-corner #logo3 {
+  max-height: min(40px, calc(var(--footer-height, 188px) * 0.22));
+  margin-left: -4px;
 }
 
 #pipette-wrapper {

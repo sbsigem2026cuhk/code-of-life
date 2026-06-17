@@ -347,8 +347,8 @@ html, body {
 
 #evolution-placeholder {
   margin-top: 10px;
-  width: 460px;
-  height: 460px;
+  width: 440px;
+  height: 440px;
   border-radius: 0;
   background-color: transparent;
   background-image: url("../design/circle.png");
@@ -375,7 +375,7 @@ html, body {
 #logos-corner {
   position: absolute;
   left: 24px;
-  bottom: 56px;
+  bottom: 20px;
   display: flex;
   align-items: flex-end;
   gap: 14px;
@@ -383,25 +383,25 @@ html, body {
 }
 
 #logos-corner img {
-  max-height: 100px;
+  max-height: 88px;
   width: auto;
   object-fit: contain;
   display: block;
 }
 
 #logos-corner #logo1 {
-  max-height: 130px;
+  max-height: 110px;
   margin-left: -20px;
-  margin-bottom: -30px;
+  margin-bottom: 0;
 }
 
 #logos-corner #logo2 {
-  max-height: 60px;
+  max-height: 52px;
   margin-left: -20px;
 }
 
 #logos-corner #logo3 {
-  max-height: 60px;
+  max-height: 52px;
   margin-left: -10px;
   margin-bottom: 0;
 }

@@ -1,9 +1,7 @@
 const { Bodies, Body, Composite, Engine, Events, Render, Runner, World } = Matter;
 
-const DESIGN_VERSION = "20260612";
-
 function designUrl(file) {
-  return `../design/${file}?v=${DESIGN_VERSION}`;
+  return `../design/${file}`;
 }
 
 const WIDTH = 1200;
@@ -34,7 +32,7 @@ const FRUITS = [
 ];
 
 const SCORE_PER_MERGE_LEVEL = [0, 2, 4, 8, 14, 24, 40, 65, 100];
-const COLLISION_RATIO = 0.65;
+const COLLISION_RATIO = 0.94;
 const imageMetaCache = {};
 
 function measureImageContent(img) {
@@ -698,12 +696,14 @@ const GAME_HEIGHT = 820;
 function fitGameToViewport() {
   const inner = document.getElementById("app-inner");
   if (!inner) return;
-  const scale = Math.max(
-    window.innerWidth / GAME_WIDTH,
-    window.innerHeight / GAME_HEIGHT
-  );
-  inner.style.transform = "scale(" + scale + ")";
+  const availW = window.visualViewport?.width ?? window.innerWidth;
+  const availH = window.visualViewport?.height ?? window.innerHeight;
+  const scale = Math.min(availW / GAME_WIDTH, availH / GAME_HEIGHT);
+  inner.style.transform = `scale(${scale})`;
 }
 
 fitGameToViewport();
 window.addEventListener("resize", fitGameToViewport);
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", fitGameToViewport);
+}
