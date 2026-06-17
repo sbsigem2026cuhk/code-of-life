@@ -1,5 +1,11 @@
 const { Bodies, Body, Composite, Engine, Events, Render, Runner, World } = Matter;
 
+const DESIGN_VERSION = "20260612";
+
+function designUrl(file) {
+  return `../design/${file}?v=${DESIGN_VERSION}`;
+}
+
 const WIDTH = 1200;
 const HEIGHT = 820;
 const CENTER = { x: 430, y: 410 };
@@ -16,15 +22,15 @@ const MAX_RANKINGS = 10;
 const rankingsRef = firebaseDB.ref("rankings");
 
 const FRUITS = [
-  { name: "Nucleotide",      visRadius: 28,  drawRadius: 42,  texture: "../design/nucleotide.png",           color: "#ff8f8f" },
-  { name: "DNA",              visRadius: 35,  drawRadius: 53,  texture: "../design/dna.png",                  color: "#8fc0ff" },
-  { name: "Nucleosome",       visRadius: 41,  drawRadius: 62,  texture: "../design/nucleosome.png",           color: "#c3a3ff" },
-  { name: "Chromatin",        visRadius: 47,  drawRadius: 72,  texture: "../design/chromatin.png",            color: "#ffd48f" },
-  { name: "Chromosome",       visRadius: 55,  drawRadius: 83,  texture: "../design/chromosome.png",          color: "#a9e49b" },
-  { name: "mRNA",             visRadius: 64,  drawRadius: 96,  texture: "../design/mrna.png",                color: "#9fe2ff" },
-  { name: "Protein",          visRadius: 74,  drawRadius: 111, texture: "../design/protein.png",             color: "#f3a6ff" },
-  { name: "Functional Cell",  visRadius: 86,  drawRadius: 129, texture: "../design/functional%20cell.png",   color: "#9effcf" },
-  { name: "Organism",         visRadius: 99,  drawRadius: 149, texture: "../design/organism.png",            color: "#ffd4f0" },
+  { name: "Nucleotide",      visRadius: 28,  drawRadius: 42,  texture: designUrl("nucleotide.png"),           color: "#ff8f8f" },
+  { name: "DNA",              visRadius: 35,  drawRadius: 53,  texture: designUrl("dna.png"),                  color: "#8fc0ff" },
+  { name: "Nucleosome",       visRadius: 41,  drawRadius: 62,  texture: designUrl("nucleosome.png"),           color: "#c3a3ff" },
+  { name: "Chromatin",        visRadius: 47,  drawRadius: 72,  texture: designUrl("chromatin.png"),            color: "#ffd48f" },
+  { name: "Chromosome",       visRadius: 55,  drawRadius: 83,  texture: designUrl("chromosome.png"),          color: "#a9e49b" },
+  { name: "mRNA",             visRadius: 64,  drawRadius: 96,  texture: designUrl("mrna.png"),                color: "#9fe2ff" },
+  { name: "Protein",          visRadius: 74,  drawRadius: 111, texture: designUrl("protein.png"),             color: "#f3a6ff" },
+  { name: "Functional Cell",  visRadius: 86,  drawRadius: 129, texture: designUrl("functional%20cell.png"),   color: "#9effcf" },
+  { name: "Organism",         visRadius: 99,  drawRadius: 149, texture: designUrl("organism.png"),            color: "#ffd4f0" },
 ];
 
 const SCORE_PER_MERGE_LEVEL = [0, 2, 4, 8, 14, 24, 40, 65, 100];
