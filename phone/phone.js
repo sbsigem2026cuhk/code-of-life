@@ -41,7 +41,59 @@ const FRUITS = [
 ];
 
 const SCORE_PER_MERGE_LEVEL = [0, 2, 4, 8, 14, 24, 40, 65, 100];
-const imageSizeCache = {};
+const COLLISION_RATIO = 0.65;
+const imageMetaCache = {};
+
+function measureImageContent(img) {
+  const w = img.naturalWidth;
+  const h = img.naturalHeight;
+  const maxSample = 256;
+  const sampleScale = Math.min(1, maxSample / Math.max(w, h));
+  const sw = Math.max(1, Math.round(w * sampleScale));
+  const sh = Math.max(1, Math.round(h * sampleScale));
+
+  const canvas = document.createElement("canvas");
+  canvas.width = sw;
+  canvas.height = sh;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  ctx.drawImage(img, 0, 0, sw, sh);
+  const data = ctx.getImageData(0, 0, sw, sh).data;
+
+  let minX = sw;
+  let minY = sh;
+  let maxX = -1;
+  let maxY = -1;
+
+  for (let y = 0; y < sh; y += 1) {
+    for (let x = 0; x < sw; x += 1) {
+      if (data[(y * sw + x) * 4 + 3] > 16) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+
+  const imgSize = Math.max(w, h);
+  if (maxX < minX) {
+    return { imgSize, contentHalf: imgSize / 2 };
+  }
+
+  const cw = (maxX - minX + 1) / sampleScale;
+  const ch = (maxY - minY + 1) / sampleScale;
+  return { imgSize, contentHalf: Math.max(cw, ch) / 2 };
+}
+
+function getFruitRadii(fruit) {
+  const meta = imageMetaCache[fruit.texture];
+  const imgSize = meta?.imgSize || 256;
+  const contentHalf = meta?.contentHalf || imgSize / 2;
+  const spriteScale = (fruit.drawRadius * 2) / imgSize;
+  const contentRadius = contentHalf * spriteScale;
+  const visRadius = Math.max(6, contentRadius * COLLISION_RATIO);
+  return { visRadius, contentRadius, spriteScale, imgSize };
+}
 
 const engine = Engine.create();
 engine.gravity.x = 0;
@@ -331,14 +383,15 @@ function getProtrudingFruits() {
   bodies.forEach((body) => {
     if (!isFruit(body)) return;
     const fruit = FRUITS[body.fruitIndex];
+    const { contentRadius } = getFruitRadii(fruit);
     const dx = body.position.x - CENTER.x;
     const dy = body.position.y - CENTER.y;
     const dist = Math.hypot(dx, dy);
-    const outerEdge = dist + fruit.drawRadius;
+    const outerEdge = dist + contentRadius;
     const protrusion = outerEdge - PLANET_RADIUS;
     if (protrusion > 0) {
       const bodyAngle = Math.atan2(dy, dx);
-      const angularSpan = Math.asin(Math.min(fruit.drawRadius / Math.max(dist, 1), 1));
+      const angularSpan = Math.asin(Math.min(contentRadius / Math.max(dist, 1), 1));
       results.push({ body, protrusion, angle: bodyAngle, span: angularSpan });
     }
   });
@@ -514,7 +567,7 @@ function preloadFruitImages() {
   FRUITS.forEach((fruit) => {
     const img = new Image();
     img.onload = () => {
-      imageSizeCache[fruit.texture] = Math.max(img.naturalWidth, img.naturalHeight) || 256;
+      imageMetaCache[fruit.texture] = measureImageContent(img);
     };
     img.src = fruit.texture;
   });
@@ -522,12 +575,10 @@ function preloadFruitImages() {
 
 function createFruitBody(x, y, fruitIndex) {
   const fruit = FRUITS[fruitIndex];
-  const drawDiameter = fruit.drawRadius * 2;
-  const imgSize = imageSizeCache[fruit.texture] || 256;
-  const spriteScale = drawDiameter / imgSize;
+  const { visRadius, spriteScale } = getFruitRadii(fruit);
   const densityScale = 1 + fruitIndex * 0.8;
 
-  return Bodies.circle(x, y, fruit.visRadius, {
+  return Bodies.circle(x, y, visRadius, {
     fruitIndex,
     density: 0.001 * densityScale,
     restitution: 0.12,
