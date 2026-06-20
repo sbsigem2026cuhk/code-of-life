@@ -13,6 +13,10 @@ const RADIAL_GRAVITY = 0.00016;
 const ANGULAR_SPEED = 0.028;
 const NEXT_BUBBLE_SIZE = 66;
 const NEXT_FRUIT_RATIO = 0.7;
+const FRUIT_SIZE_SCALE = 1.5;
+const NEXT_HINT_BUBBLE = 161;
+const PREVIEW_BUBBLE_SCALE = 1.25;
+const PREVIEW_FRUIT_RATIO = 0.92;
 const PROTRUSION_DANGER = 20;
 const WARNING_DURATION = 10;
 
@@ -80,7 +84,8 @@ function getFruitRadii(fruit) {
   const meta = imageMetaCache[fruit.texture];
   const imgSize = meta?.imgSize || 256;
   const contentHalf = meta?.contentHalf || imgSize / 2;
-  const spriteScale = (fruit.drawRadius * 2) / imgSize;
+  const drawRadius = fruit.drawRadius * FRUIT_SIZE_SCALE;
+  const spriteScale = (drawRadius * 2) / imgSize;
   const contentRadius = contentHalf * spriteScale;
   const visRadius = Math.max(6, contentRadius * COLLISION_RATIO);
   return { visRadius, contentRadius, spriteScale, imgSize };
@@ -637,11 +642,27 @@ function updatePipetteUI() {
 }
 
 function updateNextFruitUI() {
+  const dropBubble = document.getElementById("next-fruit-bubble");
+  const hintBubble = document.getElementById("next-fruit-evolution-bubble");
+  const dropBubbleSize = Math.round(NEXT_BUBBLE_SIZE * PREVIEW_BUBBLE_SCALE);
+  const dropFruitSize = Math.min(
+    dropBubbleSize - 2,
+    Math.round(dropBubbleSize * PREVIEW_FRUIT_RATIO * FRUIT_SIZE_SCALE),
+  );
+  const hintBubbleSize = Math.round(NEXT_HINT_BUBBLE * PREVIEW_BUBBLE_SCALE);
+  const hintFruitSize = Math.min(
+    hintBubbleSize - 4,
+    Math.round(hintBubbleSize * PREVIEW_FRUIT_RATIO * FRUIT_SIZE_SCALE),
+  );
+
   // Pipette bubble: shows the CURRENT fruit (what you're about to drop)
   const current = FRUITS[currentFruitIndex];
-  const uiDiameter = Math.round(NEXT_BUBBLE_SIZE * NEXT_FRUIT_RATIO);
-  nextFruitEl.style.width = `${uiDiameter}px`;
-  nextFruitEl.style.height = `${uiDiameter}px`;
+  if (dropBubble) {
+    dropBubble.style.width = `${dropBubbleSize}px`;
+    dropBubble.style.height = `${dropBubbleSize}px`;
+  }
+  nextFruitEl.style.width = `${dropFruitSize}px`;
+  nextFruitEl.style.height = `${dropFruitSize}px`;
   nextFruitEl.style.backgroundImage = `url("${current.texture}")`;
   nextFruitEl.style.backgroundPosition = "center";
   nextFruitEl.style.backgroundRepeat = "no-repeat";
@@ -650,7 +671,13 @@ function updateNextFruitUI() {
 
   // Evolution "Next" bubble: shows what comes AFTER the current drop
   const next = FRUITS[nextFruitIndex];
+  if (hintBubble) {
+    hintBubble.style.width = `${hintBubbleSize}px`;
+    hintBubble.style.height = `${hintBubbleSize}px`;
+  }
   if (nextFruitEvolutionImg) {
+    nextFruitEvolutionImg.style.width = `${hintFruitSize}px`;
+    nextFruitEvolutionImg.style.height = `${hintFruitSize}px`;
     nextFruitEvolutionImg.style.backgroundImage = `url("${next.texture}")`;
     nextFruitEvolutionImg.title = next.name;
   }
