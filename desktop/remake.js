@@ -21,7 +21,8 @@ const PROTRUSION_DANGER = 20;
 const WARNING_DURATION = 10;
 
 const MAX_RANKINGS = 10;
-const rankingsRef = firebaseDB.ref("rankings");
+const RANKINGS_STORAGE_KEY = "code-of-life-rankings";
+const PLAYER_NAME_KEY = "code-of-life-player-name";
 
 const FRUITS = [
   { name: "Nucleotide",      visRadius: 28,  drawRadius: 42,  texture: designUrl("nucleotide.png"),           color: "#ff8f8f" },
@@ -134,6 +135,35 @@ const usernameInput = document.getElementById("username-input");
 const nextFruitEvolutionImg = document.getElementById("next-fruit-evolution-img");
 const nextFruitEvolutionName = document.getElementById("next-fruit-evolution-name");
 
+function startPhysicsOnce() {
+  if (runnerStarted) return;
+  runnerStarted = true;
+  Runner.run(runner, engine);
+}
+
+function beginGame() {
+  if (gameStarted) return;
+  playerName = usernameInput?.value.trim() || loadSavedPlayerName() || "Anonymous";
+  persistPlayerName(playerName);
+  startOverlay?.classList.remove("active");
+  gameStarted = true;
+  if (startBtn) {
+    startBtn.disabled = true;
+    startBtn.tabIndex = -1;
+    startBtn.blur();
+  }
+  if (usernameInput) usernameInput.tabIndex = -1;
+  if (document.activeElement && document.activeElement !== document.body) {
+    document.activeElement.blur();
+  }
+  startPhysicsOnce();
+  startTimer();
+}
+
+if (startBtn) {
+  startBtn.addEventListener("click", beginGame);
+}
+
 // --- Game state ---
 
 let playerName = "";
@@ -176,33 +206,15 @@ updateNextFruitUI();
 
 // --- Show rankings on start screen ---
 
-renderRankings();
-
-// --- Start button ---
-
-function startPhysicsOnce() {
-  if (runnerStarted) return;
-  runnerStarted = true;
-  Runner.run(runner, engine);
-}
-
-function beginGame() {
-  if (gameStarted) return;
-  playerName = usernameInput.value.trim() || "Anonymous";
-  startOverlay.classList.remove("active");
-  gameStarted = true;
-  startBtn.disabled = true;
-  startBtn.tabIndex = -1;
-  usernameInput.tabIndex = -1;
-  startBtn.blur();
-  if (document.activeElement && document.activeElement !== document.body) {
-    document.activeElement.blur();
+try {
+  const savedName = loadSavedPlayerName();
+  if (savedName && usernameInput) {
+    usernameInput.value = savedName;
   }
-  startPhysicsOnce();
-  startTimer();
+  renderRankings();
+} catch (err) {
+  console.error("Failed to load local records:", err);
 }
-
-startBtn.addEventListener("click", beginGame);
 
 // --- Input ---
 
@@ -496,51 +508,93 @@ function formatTime(totalSeconds) {
   return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
 }
 
-// --- Ranking (Firebase Realtime Database) ---
+// --- Ranking (local storage on this device) ---
+
+function loadSavedPlayerName() {
+  try {
+    return localStorage.getItem(PLAYER_NAME_KEY) || "";
+  } catch {
+    return "";
+  }
+}
+
+function persistPlayerName(name) {
+  try {
+    localStorage.setItem(PLAYER_NAME_KEY, name);
+  } catch {
+    // localStorage unavailable (e.g. private browsing)
+  }
+}
+
+function getPlayerName() {
+  return playerName || usernameInput?.value.trim() || loadSavedPlayerName() || "Anonymous";
+}
+
+function loadRankings() {
+  try {
+    const raw = localStorage.getItem(RANKINGS_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function sortRankings(entries) {
+  return entries.slice().sort((a, b) => {
+    if (a.won !== b.won) return a.won ? -1 : 1;
+    if (a.won && b.won) return a.time - b.time;
+    return b.score - a.score;
+  });
+}
 
 function saveRanking(won, finalScore, seconds) {
-  rankingsRef.push({
-    name: playerName,
+  const name = getPlayerName();
+  persistPlayerName(name);
+  playerName = name;
+
+  const entries = loadRankings();
+  entries.push({
+    name,
     won,
     score: finalScore,
     time: seconds,
     date: new Date().toLocaleDateString(),
     timestamp: Date.now(),
   });
+
+  try {
+    localStorage.setItem(RANKINGS_STORAGE_KEY, JSON.stringify(entries));
+  } catch {
+    // localStorage unavailable
+  }
+
+  renderRankings();
 }
 
 function renderRankings() {
-  rankingList.innerHTML = '<div class="rank-empty">Loading...</div>';
-  rankingsRef.orderByChild("timestamp").once("value", (snapshot) => {
-    const entries = [];
-    snapshot.forEach((child) => {
-      entries.push(child.val());
-    });
-    entries.sort((a, b) => {
-      if (a.won !== b.won) return a.won ? -1 : 1;
-      if (a.won && b.won) return a.time - b.time;
-      return b.score - a.score;
-    });
+  if (!rankingList) return;
 
-    rankingList.innerHTML = "";
-    if (entries.length === 0) {
-      rankingList.innerHTML = '<div class="rank-empty">No records yet. Be the first!</div>';
-      return;
-    }
+  const entries = sortRankings(loadRankings());
+  rankingList.innerHTML = "";
+  if (entries.length === 0) {
+    rankingList.innerHTML = '<div class="rank-empty">No records on this device yet.</div>';
+    return;
+  }
 
-    entries.forEach((entry, i) => {
-      const row = document.createElement("div");
-      row.className = "rank-row";
-      const result = entry.won ? "WIN" : "LOSE";
-      const name = entry.name || "Anonymous";
-      row.innerHTML =
-        '<span class="rank-pos">#' + (i + 1) + '</span>' +
-        '<span class="rank-name">' + name + '</span>' +
-        '<span class="rank-result">' + result + '</span>' +
-        '<span class="rank-score">' + entry.score + ' pts</span>' +
-        '<span class="rank-time">' + formatTime(entry.time) + '</span>';
-      rankingList.appendChild(row);
-    });
+  entries.slice(0, MAX_RANKINGS).forEach((entry, i) => {
+    const row = document.createElement("div");
+    row.className = "rank-row";
+    const result = entry.won ? "WIN" : "LOSE";
+    const name = entry.name || "Anonymous";
+    row.innerHTML =
+      '<span class="rank-pos">#' + (i + 1) + '</span>' +
+      '<span class="rank-name">' + name + '</span>' +
+      '<span class="rank-result">' + result + '</span>' +
+      '<span class="rank-score">' + entry.score + ' pts</span>' +
+      '<span class="rank-time">' + formatTime(entry.time) + '</span>';
+    rankingList.appendChild(row);
   });
 }
 

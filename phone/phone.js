@@ -27,9 +27,6 @@ const PIPETTE_PIVOT_X = Math.round(35 * (80 / 120));
 const PIPETTE_PIVOT_Y = Math.round(45 * (80 / 120));
 const DISH_BOTTOM = CENTER.y + PLANET_RADIUS + RING_THICKNESS;
 
-const MAX_RANKINGS = 10;
-const rankingsRef = firebaseDB.ref("rankings");
-
 const FRUITS = [
   { name: "Nucleotide",      visRadius: Math.round(28 * S),  drawRadius: Math.round(42 * S),  texture: designUrl("nucleotide.png"),           color: "#ff8f8f" },
   { name: "DNA",              visRadius: Math.round(35 * S),  drawRadius: Math.round(53 * S),  texture: designUrl("dna.png"),                  color: "#8fc0ff" },
@@ -121,7 +118,6 @@ let runnerStarted = false;
 
 const startOverlay = document.getElementById("start-overlay");
 const startBtn = document.getElementById("start-btn");
-const rankingList = document.getElementById("ranking-list");
 const scoreValue = document.getElementById("score-value");
 const timerValue = document.getElementById("timer-value");
 const pipetteWrapper = document.getElementById("pipette-wrapper");
@@ -133,14 +129,27 @@ const finalScoreEl = document.getElementById("final-score");
 const winOverlay = document.getElementById("win-overlay");
 const winTimeEl = document.getElementById("win-time");
 const winScoreEl = document.getElementById("win-score");
-const usernameInput = document.getElementById("username-input");
 const nextFruitEvolutionImg = document.getElementById("next-fruit-evolution-img");
 const nextFruitEvolutionName = document.getElementById("next-fruit-evolution-name");
 const btnLeft = document.getElementById("btn-left");
 const btnRight = document.getElementById("btn-right");
 const btnDrop = document.getElementById("btn-drop");
 
-let playerName = "";
+function beginGame() {
+  if (gameStarted) return;
+  startOverlay?.classList.remove("active");
+  gameStarted = true;
+  if (!runnerStarted) {
+    Runner.run(runner, engine);
+    runnerStarted = true;
+  }
+  startTimer();
+}
+
+if (startBtn) {
+  startBtn.addEventListener("click", beginGame);
+}
+
 let score = 0;
 let angle = -Math.PI / 2;
 let rotateDir = 0;
@@ -173,7 +182,6 @@ Events.on(render, "afterRender", () => {
 updatePipetteUI();
 updateNextFruitUI();
 layoutPhoneUI();
-renderRankings();
 
 function layoutPhoneUI() {
   const controlsTop = DISH_BOTTOM + 16;
@@ -197,18 +205,6 @@ function layoutPhoneUI() {
     `${PIPETTE_PIVOT_Y}px`,
   );
 }
-
-startBtn.addEventListener("click", () => {
-  if (gameStarted) return;
-  playerName = usernameInput.value.trim() || "Anonymous";
-  startOverlay.classList.remove("active");
-  gameStarted = true;
-  if (!runnerStarted) {
-    Runner.run(runner, engine);
-    runnerStarted = true;
-  }
-  startTimer();
-});
 
 setupTouchControls();
 
@@ -460,7 +456,6 @@ function triggerGameOver() {
   gameEnded = true;
   stopTimer();
   clearWarning();
-  saveRanking(false, score, elapsedSeconds);
   finalScoreEl.textContent = score;
   gameOverOverlay.classList.add("active");
 }
@@ -469,7 +464,6 @@ function triggerWin() {
   gameEnded = true;
   stopTimer();
   clearWarning();
-  saveRanking(true, score, elapsedSeconds);
   winTimeEl.textContent = formatTime(elapsedSeconds);
   winScoreEl.textContent = score;
   winOverlay.classList.add("active");
@@ -496,53 +490,6 @@ function formatTime(totalSeconds) {
   const m = Math.floor(totalSeconds / 60);
   const s = totalSeconds % 60;
   return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
-}
-
-function saveRanking(won, finalScore, seconds) {
-  rankingsRef.push({
-    name: playerName,
-    won,
-    score: finalScore,
-    time: seconds,
-    date: new Date().toLocaleDateString(),
-    timestamp: Date.now(),
-    platform: "phone",
-  });
-}
-
-function renderRankings() {
-  rankingList.innerHTML = '<div class="rank-empty">Loading...</div>';
-  rankingsRef.orderByChild("timestamp").once("value", (snapshot) => {
-    const entries = [];
-    snapshot.forEach((child) => {
-      entries.push(child.val());
-    });
-    entries.sort((a, b) => {
-      if (a.won !== b.won) return a.won ? -1 : 1;
-      if (a.won && b.won) return a.time - b.time;
-      return b.score - a.score;
-    });
-
-    rankingList.innerHTML = "";
-    if (entries.length === 0) {
-      rankingList.innerHTML = '<div class="rank-empty">No records yet. Be the first!</div>';
-      return;
-    }
-
-    entries.slice(0, MAX_RANKINGS).forEach((entry, i) => {
-      const row = document.createElement("div");
-      row.className = "rank-row";
-      const result = entry.won ? "WIN" : "LOSE";
-      const name = entry.name || "Anonymous";
-      row.innerHTML =
-        '<span class="rank-pos">#' + (i + 1) + '</span>' +
-        '<span class="rank-name">' + name + '</span>' +
-        '<span class="rank-result">' + result + '</span>' +
-        '<span class="rank-score">' + entry.score + '</span>' +
-        '<span class="rank-time">' + formatTime(entry.time) + '</span>';
-      rankingList.appendChild(row);
-    });
-  });
 }
 
 function buildBoundaryRing() {
