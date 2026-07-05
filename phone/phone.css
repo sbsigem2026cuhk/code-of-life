@@ -103,7 +103,7 @@ html, body {
 #start-content {
   text-align: center;
   width: 100%;
-  padding: 32px 20px 40px;
+  padding: 32px 20px 52px;
 }
 
 #start-title {
@@ -357,7 +357,7 @@ html, body {
 
 #posttest-content {
   width: 100%;
-  padding: 28px 20px 40px;
+  padding: 28px 20px 52px;
 }
 
 #thankyou-content {
@@ -377,6 +377,29 @@ html, body {
   font-size: 14px;
   opacity: 0.85;
   line-height: 1.5;
+}
+
+.survey-skip-btn {
+  position: absolute;
+  right: calc(10px + env(safe-area-inset-right, 0px));
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  z-index: 5;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.survey-skip-btn:hover,
+.survey-skip-btn:active {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 /* ===== HUD ===== */

@@ -131,12 +131,14 @@ const winTimeEl = document.getElementById("win-time");
 const winScoreEl = document.getElementById("win-score");
 const usernameInput = document.getElementById("username-input");
 const pretestError = document.getElementById("pretest-error");
+const pretestSkipBtn = document.getElementById("pretest-skip-btn");
 const gameoverContinueBtn = document.getElementById("gameover-continue-btn");
 const winContinueBtn = document.getElementById("win-continue-btn");
 const posttestOverlay = document.getElementById("posttest-overlay");
 const posttestError = document.getElementById("posttest-error");
 const posttestStatus = document.getElementById("posttest-status");
 const posttestSubmitBtn = document.getElementById("posttest-submit-btn");
+const posttestSkipBtn = document.getElementById("posttest-skip-btn");
 const thankyouOverlay = document.getElementById("thankyou-overlay");
 const thankyouMessage = document.getElementById("thankyou-message");
 const nextFruitEvolutionImg = document.getElementById("next-fruit-evolution-img");
@@ -152,6 +154,17 @@ let lastGameWon = false;
 function setSurveyScrollEnabled(enabled) {
   document.body.style.touchAction = enabled ? "pan-y" : "none";
   document.getElementById("app-inner")?.classList.toggle("survey-mode", enabled);
+}
+
+function launchGameAfterSurvey() {
+  setSurveyScrollEnabled(false);
+  startOverlay?.classList.remove("active");
+  gameStarted = true;
+  if (!runnerStarted) {
+    Runner.run(runner, engine);
+    runnerStarted = true;
+  }
+  startTimer();
 }
 
 function beginGame() {
@@ -174,14 +187,23 @@ function beginGame() {
     preQ3: preResult.answers.preQ3,
   };
 
-  setSurveyScrollEnabled(false);
-  startOverlay?.classList.remove("active");
-  gameStarted = true;
-  if (!runnerStarted) {
-    Runner.run(runner, engine);
-    runnerStarted = true;
-  }
-  startTimer();
+  launchGameAfterSurvey();
+}
+
+function skipPreTest() {
+  if (gameStarted) return;
+  if (pretestError) pretestError.hidden = true;
+
+  playerName = usernameInput?.value.trim() || "Anonymous";
+  surveySession = {
+    sessionId: createSurveySessionId(),
+    name: playerName,
+    preQ1: SURVEY_SKIP_VALUE,
+    preQ2: SURVEY_SKIP_VALUE,
+    preQ3: SURVEY_SKIP_VALUE,
+  };
+
+  launchGameAfterSurvey();
 }
 
 function openPostTest() {
@@ -196,18 +218,12 @@ function openPostTest() {
   posttestOverlay?.classList.add("active");
 }
 
-async function submitPostTest() {
-  const postResult = readSurveyAnswers(POST_QUESTIONS);
-  if (!postResult.complete) {
-    if (posttestError) posttestError.hidden = false;
-    return;
-  }
-  if (posttestError) posttestError.hidden = true;
-
+async function finishPostTest(postAnswers, { surveySkipped = false } = {}) {
   if (posttestSubmitBtn) {
     posttestSubmitBtn.disabled = true;
     posttestSubmitBtn.textContent = "Submitting… / 提交中…";
   }
+  if (posttestSkipBtn) posttestSkipBtn.disabled = true;
   if (posttestStatus) {
     posttestStatus.hidden = false;
     posttestStatus.textContent = "Submitting… / 提交中…";
@@ -220,9 +236,9 @@ async function submitPostTest() {
     preQ1: surveySession?.preQ1 || "",
     preQ2: surveySession?.preQ2 || "",
     preQ3: surveySession?.preQ3 || "",
-    postQ1: postResult.answers.postQ1,
-    postQ2: postResult.answers.postQ2,
-    postQ3: postResult.answers.postQ3,
+    postQ1: postAnswers.postQ1,
+    postQ2: postAnswers.postQ2,
+    postQ3: postAnswers.postQ3,
     score,
     timeSeconds: elapsedSeconds,
     won: lastGameWon,
@@ -233,7 +249,10 @@ async function submitPostTest() {
   posttestOverlay?.classList.remove("active");
 
   if (thankyouMessage) {
-    if (result.skipped) {
+    if (surveySkipped) {
+      thankyouMessage.textContent =
+        "Survey skipped. Thanks for playing! / 已跳過問卷，感謝遊玩！";
+    } else if (result.skipped) {
       thankyouMessage.textContent =
         "Thank you for completing the survey! (Google Sheets is not configured — responses were not sent to the server.) / 感謝完成問卷！（尚未設定 Google 試算表，回覆未上傳。）";
     } else if (result.ok) {
@@ -252,7 +271,27 @@ async function submitPostTest() {
     posttestSubmitBtn.disabled = false;
     posttestSubmitBtn.textContent = "Submit / 提交";
   }
+  if (posttestSkipBtn) posttestSkipBtn.disabled = false;
   if (posttestStatus) posttestStatus.hidden = true;
+}
+
+async function submitPostTest() {
+  const postResult = readSurveyAnswers(POST_QUESTIONS);
+  if (!postResult.complete) {
+    if (posttestError) posttestError.hidden = false;
+    return;
+  }
+  if (posttestError) posttestError.hidden = true;
+
+  await finishPostTest(postResult.answers);
+}
+
+function skipPostTest() {
+  if (posttestError) posttestError.hidden = true;
+  finishPostTest(
+    { postQ1: SURVEY_SKIP_VALUE, postQ2: SURVEY_SKIP_VALUE, postQ3: SURVEY_SKIP_VALUE },
+    { surveySkipped: true },
+  );
 }
 
 if (startBtn) {
@@ -262,6 +301,8 @@ if (startBtn) {
 gameoverContinueBtn?.addEventListener("click", openPostTest);
 winContinueBtn?.addEventListener("click", openPostTest);
 posttestSubmitBtn?.addEventListener("click", submitPostTest);
+pretestSkipBtn?.addEventListener("click", skipPreTest);
+posttestSkipBtn?.addEventListener("click", skipPostTest);
 
 let score = 0;
 let angle = -Math.PI / 2;
