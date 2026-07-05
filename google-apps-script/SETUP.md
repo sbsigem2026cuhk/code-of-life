@@ -25,7 +25,7 @@ Follow these steps once. After that, every student who plays via your GitHub lin
 
 ## 4. Connect the game
 
-1. Open `desktop/survey.js` in this repo.
+1. Open `lib/survey.js` in this repo.
 2. Paste your URL into:
 
    ```javascript

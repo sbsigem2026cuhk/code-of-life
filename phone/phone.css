@@ -88,7 +88,11 @@ html, body {
   pointer-events: none;
   transition: opacity 0.4s ease;
   overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  height: 100%;
 }
 
 #start-overlay.active {
@@ -119,26 +123,44 @@ html, body {
 }
 
 #edu-note {
-  margin-top: 20px;
-  padding: 16px 18px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   text-align: left;
-  line-height: 1.5;
-  font-size: 13px;
+  line-height: 1.45;
+  font-size: 12px;
 }
 
-#edu-heading {
-  font-size: 14px;
+#edu-note summary {
+  list-style: none;
+  cursor: pointer;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  margin-bottom: 6px;
   color: #b8d4ff;
 }
 
+#edu-note summary::-webkit-details-marker {
+  display: none;
+}
+
+#edu-note summary::after {
+  content: " ▾";
+  opacity: 0.7;
+}
+
+#edu-note[open] summary::after {
+  content: " ▴";
+}
+
+#edu-heading {
+  display: inline;
+}
+
 #edu-note p {
-  margin: 4px 0;
+  margin: 8px 0 0;
 }
 
 #edu-note strong {
@@ -148,15 +170,213 @@ html, body {
 #start-btn {
   margin-top: 18px;
   padding: 14px 56px;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   color: #1a1230;
   background: linear-gradient(135deg, #ffe066, #ffb347);
   border: none;
   border-radius: 14px;
   cursor: pointer;
   box-shadow: 0 4px 20px rgba(255, 224, 102, 0.35);
+}
+
+/* ===== Pre/Post survey ===== */
+
+#pretest-section,
+#posttest-content {
+  text-align: left;
+}
+
+#pretest-heading,
+#posttest-heading {
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #ffe066;
+  text-align: center;
+}
+
+.survey-scroll-hint {
+  margin: 0 0 10px;
+  font-size: 11px;
+  opacity: 0.65;
+  text-align: center;
+  color: #b8d4ff;
+}
+
+.survey-intro {
+  margin: 8px 0 14px;
+  font-size: 12px;
+  opacity: 0.8;
+  line-height: 1.45;
+  text-align: center;
+}
+
+#username-section {
+  margin-top: 12px;
+}
+
+#username-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  opacity: 0.85;
+  line-height: 1.4;
+}
+
+#username-input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  outline: none;
+}
+
+#username-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 400;
+}
+
+.survey-question {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  min-width: 0;
+}
+
+.survey-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.survey-q-num {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #b8d4ff;
+  text-transform: uppercase;
+}
+
+.survey-q-en {
+  font-weight: 600;
+}
+
+.survey-q-zh {
+  opacity: 0.85;
+  font-size: 12px;
+}
+
+.survey-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.survey-option:active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.survey-option input {
+  margin-top: 3px;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.survey-option-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.survey-opt-zh {
+  opacity: 0.8;
+  font-size: 11px;
+}
+
+.survey-error {
+  margin-top: 8px;
+  color: #ff8f8f;
+  font-size: 12px;
+  text-align: center;
+}
+
+.survey-status {
+  margin-top: 8px;
+  font-size: 12px;
+  text-align: center;
+  opacity: 0.9;
+}
+
+#posttest-overlay,
+#thankyou-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 310;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: rgba(20, 14, 46, 0.96);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  height: 100%;
+}
+
+#posttest-overlay.active,
+#thankyou-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#posttest-content {
+  width: 100%;
+  padding: 28px 20px 40px;
+}
+
+#thankyou-content {
+  text-align: center;
+  padding: 48px 20px;
+  margin: auto;
+}
+
+#thankyou-title {
+  font-size: 32px;
+  font-weight: 900;
+  color: #ffe066;
+}
+
+#thankyou-message {
+  margin-top: 14px;
+  font-size: 14px;
+  opacity: 0.85;
+  line-height: 1.5;
 }
 
 /* ===== HUD ===== */
@@ -374,6 +594,15 @@ html, body {
 }
 
 #start-overlay.active ~ #touch-controls {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#app-inner.survey-mode #hud-top,
+#app-inner.survey-mode #evolution-panel,
+#app-inner.survey-mode #phone-footer,
+#app-inner.survey-mode #pipette-wrapper,
+#app-inner.survey-mode #touch-controls {
   opacity: 0;
   pointer-events: none;
 }

@@ -24,8 +24,24 @@
           <div id="start-title">Code of Life</div>
           <div id="start-subtitle">Phone Edition</div>
 
-          <div id="edu-note">
-            <div id="edu-heading">The Central Dogma of Molecular Biology</div>
+          <div id="pretest-section">
+            <div id="pretest-heading">Pre-Test / 前測</div>
+            <p class="survey-intro">Please answer all questions before starting the game. / 請在開始遊戲前回答所有問題。</p>
+            <p class="survey-scroll-hint">↓ Scroll to see all questions / 向下滑動查看所有問題</p>
+
+            <div id="username-section">
+              <label id="username-label" for="username-input">Name (optional) / 姓名（選填，可留空匿名）</label>
+              <input id="username-input" type="text" placeholder="Anonymous / 匿名" maxlength="20" autocomplete="off" />
+            </div>
+
+            <div id="pretest-questions"></div>
+            <p id="pretest-error" class="survey-error" hidden>Please answer all pre-test questions. / 請回答所有前測問題。</p>
+          </div>
+
+          <button id="start-btn" type="button">Start Game / 開始遊戲</button>
+
+          <details id="edu-note">
+            <summary id="edu-heading">How to play / 遊戲說明</summary>
             <p>
               Merge matching molecules to climb the chain of life — from
               <strong>nucleotides</strong> to a complete <strong>organism</strong>.
@@ -33,9 +49,7 @@
             <p>
               Your goal: <strong>create an Organism!</strong>
             </p>
-          </div>
-
-          <button id="start-btn" type="button">START</button>
+          </details>
         </div>
       </div>
 
@@ -99,7 +113,7 @@
           <div id="gameover-title">GAME OVER</div>
           <div id="gameover-score-label">Your Score</div>
           <div id="final-score">0</div>
-          <button class="restart-btn" onclick="location.reload()">RESTART</button>
+          <button id="gameover-continue-btn" class="restart-btn" type="button">Continue to Post-Test / 繼續後測</button>
         </div>
       </div>
 
@@ -112,7 +126,29 @@
           <div id="win-time">00:00</div>
           <div id="win-score-label">Score</div>
           <div id="win-score">0</div>
-          <button class="restart-btn" onclick="location.reload()">RESTART</button>
+          <button id="win-continue-btn" class="restart-btn" type="button">Continue to Post-Test / 繼續後測</button>
+        </div>
+      </div>
+
+      <!-- ===== POST-TEST ===== -->
+      <div id="posttest-overlay">
+        <div id="posttest-content">
+          <div id="posttest-heading">Post-Test / 後測</div>
+          <p class="survey-intro">Thank you for playing! Please answer these questions. / 感謝遊玩！請回答以下問題。</p>
+          <p class="survey-scroll-hint">↓ Scroll to see all questions / 向下滑動查看所有問題</p>
+          <div id="posttest-questions"></div>
+          <p id="posttest-error" class="survey-error" hidden>Please answer all post-test questions. / 請回答所有後測問題。</p>
+          <p id="posttest-status" class="survey-status" hidden></p>
+          <button id="posttest-submit-btn" class="restart-btn" type="button">Submit / 提交</button>
+        </div>
+      </div>
+
+      <!-- ===== THANK YOU ===== -->
+      <div id="thankyou-overlay">
+        <div id="thankyou-content">
+          <div id="thankyou-title">Thank You! / 感謝參與</div>
+          <p id="thankyou-message">Your responses have been recorded.</p>
+          <button id="thankyou-restart-btn" class="restart-btn" type="button" onclick="location.reload()">Play Again / 再玩一次</button>
         </div>
       </div>
 
@@ -122,6 +158,7 @@
     </div>
 
     <script src="../lib/matter.min.js"></script>
+    <script src="../lib/survey.js"></script>
     <script src="./phone.js"></script>
   </body>
 </html>
