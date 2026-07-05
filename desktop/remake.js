@@ -132,8 +132,20 @@ const winOverlay = document.getElementById("win-overlay");
 const winTimeEl = document.getElementById("win-time");
 const winScoreEl = document.getElementById("win-score");
 const usernameInput = document.getElementById("username-input");
+const pretestError = document.getElementById("pretest-error");
+const gameoverContinueBtn = document.getElementById("gameover-continue-btn");
+const winContinueBtn = document.getElementById("win-continue-btn");
+const posttestOverlay = document.getElementById("posttest-overlay");
+const posttestError = document.getElementById("posttest-error");
+const posttestStatus = document.getElementById("posttest-status");
+const posttestSubmitBtn = document.getElementById("posttest-submit-btn");
+const thankyouOverlay = document.getElementById("thankyou-overlay");
+const thankyouMessage = document.getElementById("thankyou-message");
 const nextFruitEvolutionImg = document.getElementById("next-fruit-evolution-img");
 const nextFruitEvolutionName = document.getElementById("next-fruit-evolution-name");
+
+let surveySession = null;
+let lastGameWon = false;
 
 function startPhysicsOnce() {
   if (runnerStarted) return;
@@ -143,8 +155,25 @@ function startPhysicsOnce() {
 
 function beginGame() {
   if (gameStarted) return;
+
+  const preResult = readSurveyAnswers(PRE_QUESTIONS);
+  if (!preResult.complete) {
+    if (pretestError) pretestError.hidden = false;
+    return;
+  }
+  if (pretestError) pretestError.hidden = true;
+
   playerName = usernameInput?.value.trim() || loadSavedPlayerName() || "Anonymous";
   persistPlayerName(playerName);
+
+  surveySession = {
+    sessionId: createSurveySessionId(),
+    name: playerName,
+    preQ1: preResult.answers.preQ1,
+    preQ2: preResult.answers.preQ2,
+    preQ3: preResult.answers.preQ3,
+  };
+
   startOverlay?.classList.remove("active");
   gameStarted = true;
   if (startBtn) {
@@ -160,9 +189,82 @@ function beginGame() {
   startTimer();
 }
 
+function openPostTest() {
+  gameOverOverlay?.classList.remove("active");
+  winOverlay?.classList.remove("active");
+  if (posttestError) posttestError.hidden = true;
+  if (posttestStatus) {
+    posttestStatus.hidden = true;
+    posttestStatus.textContent = "";
+  }
+  posttestOverlay?.classList.add("active");
+}
+
+async function submitPostTest() {
+  const postResult = readSurveyAnswers(POST_QUESTIONS);
+  if (!postResult.complete) {
+    if (posttestError) posttestError.hidden = false;
+    return;
+  }
+  if (posttestError) posttestError.hidden = true;
+
+  if (posttestSubmitBtn) {
+    posttestSubmitBtn.disabled = true;
+    posttestSubmitBtn.textContent = "Submitting… / 提交中…";
+  }
+  if (posttestStatus) {
+    posttestStatus.hidden = false;
+    posttestStatus.textContent = "Submitting… / 提交中…";
+  }
+
+  const payload = {
+    timestamp: new Date().toISOString(),
+    sessionId: surveySession?.sessionId || createSurveySessionId(),
+    name: surveySession?.name || getPlayerName(),
+    preQ1: surveySession?.preQ1 || "",
+    preQ2: surveySession?.preQ2 || "",
+    preQ3: surveySession?.preQ3 || "",
+    postQ1: postResult.answers.postQ1,
+    postQ2: postResult.answers.postQ2,
+    postQ3: postResult.answers.postQ3,
+    score,
+    timeSeconds: elapsedSeconds,
+    won: lastGameWon,
+  };
+
+  const result = await submitSurveyResponse(payload);
+
+  posttestOverlay?.classList.remove("active");
+
+  if (thankyouMessage) {
+    if (result.skipped) {
+      thankyouMessage.textContent =
+        "Thank you for completing the survey! (Google Sheets is not configured — responses were not sent to the server.) / 感謝完成問卷！（尚未設定 Google 試算表，回覆未上傳。）";
+    } else if (result.ok) {
+      thankyouMessage.textContent =
+        "Your responses have been recorded. Thank you! / 您的回覆已提交，感謝參與！";
+    } else {
+      thankyouMessage.textContent =
+        "We could not confirm submission. If the problem persists, please contact your instructor. / 無法確認是否提交成功，若問題持續請聯絡老師。";
+    }
+  }
+
+  thankyouOverlay?.classList.add("active");
+
+  if (posttestSubmitBtn) {
+    posttestSubmitBtn.disabled = false;
+    posttestSubmitBtn.textContent = "Submit / 提交";
+  }
+  if (posttestStatus) posttestStatus.hidden = true;
+}
+
 if (startBtn) {
   startBtn.addEventListener("click", beginGame);
 }
+
+gameoverContinueBtn?.addEventListener("click", openPostTest);
+winContinueBtn?.addEventListener("click", openPostTest);
+posttestSubmitBtn?.addEventListener("click", submitPostTest);
 
 // --- Game state ---
 
@@ -466,6 +568,7 @@ function clearWarning() {
 
 function triggerGameOver() {
   gameEnded = true;
+  lastGameWon = false;
   stopTimer();
   clearWarning();
   saveRanking(false, score, elapsedSeconds);
@@ -475,6 +578,7 @@ function triggerGameOver() {
 
 function triggerWin() {
   gameEnded = true;
+  lastGameWon = true;
   stopTimer();
   clearWarning();
   saveRanking(true, score, elapsedSeconds);
